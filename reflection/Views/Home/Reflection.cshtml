@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Reflection";
+}
+@model IEnumerable<Type>
+<h2>Reflection</h2>
+
+<div class="panel panel-primary">
+
+    <div class="list-group">
+        @{
+            foreach (var item in Model)
+            {
+                var des = item.GetCustomAttributes(false).Where(p => p.GetType() == typeof(DescribeAttribute));
+
+
+                foreach (DescribeAttribute attr in des)
+                {
+
+                    <h4 class="list-group-item-text">@attr.Name</h4>
+                        <p>@attr.Describe</p>
+
+                }
+                <ol>
+                    @foreach (var method in item.GetMethods().Where(p => p.Module.Name == item.Module.Name && p.IsPublic))
+                    {
+                        <li>
+                            @foreach (DescribeAttribute attr in method.GetCustomAttributes(false).Where(p => p.GetType() == typeof(DescribeAttribute)))
+                            {
+                                <h4 class="list-group-item-text">@attr.Name</h4>
+                                <p>@attr.Describe</p>
+                            }
+                    </li>
+                    }
+                </ol>
+
+
+            }
+        }
+
+    </div>
+
+</div>
